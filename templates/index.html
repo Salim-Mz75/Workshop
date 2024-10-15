@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TruthScan - Vérifiez la véracité des informations</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Style général de la page */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('Fake Real.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-color: #f4f4f4;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Mode sombre */
+        body.dark-mode {
+            background-color: #121212;
+            color: #f1f1f1;
+        }
+
+        /* Style du header */
+        header {
+            background-color: rgba(18, 161, 223, 0.9);
+            padding: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+            font-size: 24px;
+        }
+
+        header a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            margin-left: 20px;
+            transition: color 0.3s;
+        }
+
+        header a:hover {
+            color: #f1f0ea;
+        }
+
+        /* Style du conteneur principal */
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Style du formulaire de recherche */
+        #search-form {
+            width: 100%;
+            margin: 50px auto;
+            border-radius: 15px;
+            padding: 20px;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        body.loaded #search-form {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #search-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        #search-form input[type="text"] {
+            margin-bottom: 20px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        #search-form input[type="text"]:focus {
+            border-color: #12a1df;
+            box-shadow: 0 0 5px rgba(18, 161, 223, 0.5);
+            outline: none;
+        }
+
+        #search-form input[type="submit"] {
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            transition: background 0.3s, transform 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #search-form input[type="submit"]:hover {
+            background: linear-gradient(90deg, #45a049, #4CAF50);
+            transform: scale(1.05);
+        }
+
+        /* Style du footer */
+        footer {
+            background-color: rgba(51, 51, 51, 0.9);
+            padding: 10px;
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Styles pour la barre de progression et les notifications */
+        #scroll-bar-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 50px auto;
+        }
+
+        #scroll-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f1f1f1;
+            position: relative;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #scroll-bar-thumb {
+            width: 0;
+            height: 100%;
+            background-color: #007bff;
+            position: absolute;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        #scroll-value {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        /* Styles pour les groupes de boutons */
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .button-group button {
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-group button:hover {
+            background: linear-gradient(90deg, #45a049, #4CAF50);
+            transform: scale(1.05);
+        }
+
+        .search-options {
+            display: flex; /* Utiliser flexbox pour aligner les boutons */
+            justify-content: center; /* Centre les boutons */
+            margin-top: 20px; /* Marge supérieure pour espacer du champ de recherche */
+        }
+
+        .search-options button {
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 0 15px; /* Espacement latéral entre les boutons */
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-options button:hover {
+            background: linear-gradient(90deg, #45a049, #4CAF50);
+            transform: scale(1.05);
+        }
+
+        #notification {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        #progress-bar-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        #progress-bar {
+            width: 0;
+            height: 25px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        /* Style du bouton de mode sombre */
+        #toggle-dark-mode {
+            background-color: #12a1df;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #toggle-dark-mode:hover {
+            background-color: #0a7bb4;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/index">Home</a>
+        <h1>TruthScan</h1>
+        <button id="toggle-dark-mode">Mode Sombre</button>
+    </header>
+
+    <div class="container">
+        <section>
+            <h2>Bienvenue sur TruthScan</h2>
+            <p>Vérifiez la véracité des informations en quelques clics. Entrez le lien à analyser ci-dessous et découvrez si le contenu est authentique.</p>
+        </section>
+
+        <div id="search-form">
+            <h2>Vérifier un lien</h2>
+            <form id="form-search" action="/result" method="POST">
+                <input type="text" id="search-input" name="search" placeholder="Entrez l'URL à vérifier" required>
+                <div class="search-options">
+                    <button type="button" onclick="searchType('deepfake')">Deepfake</button>
+                    <button type="button" onclick="searchType('fake-news')">Fake News</button>
+                </div>
+                <input type="submit" value="Vérifier">
+            </form>
+        </div>
+
+        <div id="notification"></div>
+
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 TruthScan. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        // Gestion du mode sombre
+        document.getElementById('toggle-dark-mode').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const mode = document.body.classList.contains('dark-mode') ? 'désactivé' : 'activé';
+            alert('Mode sombre ' + mode);
+        });
+
+        // Gestion de la soumission du formulaire
+        document.getElementById('form-search').addEventListener('submit', function(e) {
+            e.preventDefault(); // Empêche l'envoi par défaut du formulaire
+            const searchInput = document.getElementById('search-input').value;
+
+            // Affiche la notification de traitement
+            showNotification('Recherche en cours pour ' + searchInput + '...', 3000);
+
+            // Simuler la progression
+            simulateProgress();
+
+            // Redirige vers la page des résultats après 3 secondes
+            setTimeout(() => {
+                window.location.href = 'results.html';
+            }, 3000);
+        });
+
+        // Fonction pour afficher la notification
+        function showNotification(message, duration) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, duration);
+        }
+
+        // Fonction pour simuler la barre de progression
+        function simulateProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width++;
+                    progressBar.style.width = width + '%';
+                }
+            }, 50); // Vitesse de la progression
+        }
+
+        // Fonction pour changer le type de recherche
+        function searchType(type) {
+            const searchInput = document.getElementById('search-input');
+            if (type === 'deepfake') {
+                searchInput.placeholder = 'Entrez le lien à analyser pour Deepfake';
+            } else if (type === 'fake-news') {
+                searchInput.placeholder = 'Entrez le lien à analyser pour Fake News';
+            }
+        }
+    </script>
+</body>
+</html>
